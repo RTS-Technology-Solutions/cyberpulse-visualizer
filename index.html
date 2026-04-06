@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO Meta Tags -->
+    <title>CyberPulse | Live Microphone Music Visualizer | Free Audio Reactive Animation</title>
+    <meta name="description" content="Real-time audio visualization powered by your microphone. Watch sound transform into mesmerizing particle animations with customizable controls. Built with Web Audio API - no downloads required." />
+    <meta name="keywords" content="music visualizer, microphone visualizer, audio reactive, live music visualization, web audio api, frequency analyzer, real-time audio, sound reactive, audio spectrum, beat detection, free visualizer, browser visualizer" />
+    <meta name="author" content="RTS Technology & Solutions" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://cyberpulse.labs.rapidtechconsultants.com/" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://cyberpulse.labs.rapidtechconsultants.com/" />
+    <meta property="og:title" content="CyberPulse | Live Microphone Music Visualizer" />
+    <meta property="og:description" content="Real-time audio visualization powered by your microphone. Watch sound transform into mesmerizing particle animations with customizable PUNCH, VIBE, and MOOD controls." />
+    <meta property="og:site_name" content="CyberPulse Visualizer | RTS Labs" />
+    <meta property="og:image" content="https://cyberpulse.labs.rapidtechconsultants.com/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="CyberPulse audio visualizer with colorful particle animations" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://cyberpulse.labs.rapidtechconsultants.com/" />
+    <meta name="twitter:title" content="CyberPulse | Live Microphone Music Visualizer" />
+    <meta name="twitter:description" content="Real-time audio visualization powered by your microphone. Mesmerizing particle animations with Web Audio API - no downloads needed!" />
+    <meta name="twitter:image" content="https://cyberpulse.labs.rapidtechconsultants.com/assets/og-image.png" />
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#00ffff" />
+    
+    <!-- Google Analytics: Consent-gated (loads only if user grants consent) -->
+    <!-- See utils/analytics.ts for implementation -->
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { 
+            margin: 0; 
+            background-color: #0D0221; /* Default to cyber-bg */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* A more modern sans-serif stack */
+            overflow: hidden; /* Prevent scrollbars from visualizer itself */
+        }
+        #root {
+            width: 100vw;
+            height: 100vh;
+        }
+        /* Custom scrollbar for consistency if ever needed, though overflow is hidden */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1130; /* Darker variant of cyber-bg */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #F706CF; /* cyber-secondary */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2DE2E6; /* cyber-primary */
+        }
+
+        /* For UI auto-hide transitions */
+        .ui-element {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .ui-hidden {
+            opacity: 0;
+            pointer-events: none; /* Important for not intercepting mouse events when hidden */
+        }
+        .header-hidden {
+            transform: translateY(-100%);
+        }
+        .footer-hidden {
+            transform: translateY(100%);
+        }
+        .now-playing-hidden {
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+        /* Hide cursor when UI is hidden */
+        body.hide-cursor {
+            cursor: none;
+        }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'cyber-primary': '#2DE2E6',   // Bright Teal
+              'cyber-secondary': '#F706CF', // Vibrant Pink
+              'cyber-accent': '#9013FE',    // Deep Purple
+              'cyber-bg': '#0D0221',        // Very Dark Blue/Purple
+              'cyber-bg-light': 'rgba(13, 2, 33, 0.5)' // semi-transparent bg for elements
+            },
+            animation: {
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'fadeIn': 'fadeIn 1s ease-out forwards',
+              'fadeOut': 'fadeOut 1s ease-out forwards',
+            },
+            keyframes: {
+              pulse: {
+                '0%, 100%': { opacity: 1, textShadow: '0 0 5px #2DE2E6, 0 0 10px #2DE2E6' },
+                '50%': { opacity: 0.7, textShadow: '0 0 10px #2DE2E6, 0 0 20px #2DE2E6, 0 0 30px #F706CF' },
+              },
+              fadeIn: {
+                '0%': { opacity: '0', transform: 'translate(-50%, -60%) scale(0.95)' },
+                '100%': { opacity: '1', transform: 'translate(-50%, -50%) scale(1)' },
+              },
+              fadeOut: {
+                '0%': { opacity: '1', transform: 'translate(-50%, -50%) scale(1)' },
+                '100%': { opacity: '0', transform: 'translate(-50%, -40%) scale(0.95)', visibility: 'hidden' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <svg width="0" height="0" style="position: absolute;">
+      <defs>
+        <symbol id="icon-fullscreen-enter" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+        </symbol>
+        <symbol id="icon-fullscreen-exit" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+        </symbol>
+      </defs>
+    </svg>
+    <!-- The bundled script will be automatically injected in a real build setup -->
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
